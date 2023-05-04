@@ -7,42 +7,41 @@
 #include <cuda_runtime.h>
 #include <cub/cub.cuh>
 
-class parser {
+class parser{
 public:
-    parser(int argc, char** argv) {
-        this->Grid_size = 512;
-        this->Accuracy = 1e-6;
-        this->Iterations = 1000000;
-        for (int i = 0; i < argc - 1; i++) {
+    parser(int argc, char** argv){
+        this->_grid_size = 512;
+        this->_accur = 1e-6;
+        this->_iters = 1000000;
+        for (int i=0; i<argc-1; i++){
             std::string arg = argv[i];
-            if (arg == "-accur") {
-                std::string dump = std::string(argv[i + 1]);
-                this->Accuracy = std::stod(dump);
-            }
-            else if (arg == "-a") {
-                this->Grid_size = std::stoi(argv[i + 1]);
-            }
-            else if (arg == "-i") {
-                this->Iterations = std::stoi(argv[i + 1]);
+            if (arg == "-accur"){
+                std::string dump = std::string(argv[i+1]);
+                this->_accur = std::stod(dump);
+            }else if (arg == "-a"){
+                this->_grid_size = std::stoi(argv[i + 1]);
+            }else if (arg == "-i"){
+                this->_iters = std::stoi(argv[i + 1]);
             }
         }
 
     };
-    __host__ double accuracy() const {
-        return this->accuracy;
+    __host__ double accuracy() const{
+        return this->_accur;
     }
-    __host__ int iterations() const {
-        return this->iterations;
+    __host__ int iterations() const{
+        return this->_iters;
     }
-    __host__ int grid()const {
-        return this->grid_size;
+    __host__ int grid()const{
+        return this->_grid_size;
     }
 private:
-    double accuracy;
-    int grid_size;
-    int iterations;
+    double _accur;
+    int _grid_size;
+    int _iters;
 
 };
+
 
 double corners[4] = { 10, 20, 30, 20 };
 
@@ -193,14 +192,6 @@ int main(int argc, char** argv) {
     }
 
     nvtxRangePop();
-    // cudaMemcpy(first_dev, dev_A, sizeof(double) * full_size, cudaMemcpyDeviceToHost);
-
-    // for (int i = 0; i < size; i ++) {
-    //     for (int j = 0; j < size; j ++) {
-    //         std::cout << first_dev[j * size + i] << " ";
-    //     }
-    //     std::cout << std::endl;
-    // }
 
     std::cout << "Error: " << error << std::endl;
     std::cout << "Iteration: " << i << std::endl;
