@@ -10,20 +10,20 @@
 class parser {
 public:
     parser(int argc, char** argv) {
-        this->grid_size = 512;
-        this->accuracy = 1e-6;
-        this->iterations = 1000000;
+        this->Grid_size = 512;
+        this->Accuracy = 1e-6;
+        this->Iterations = 1000000;
         for (int i = 0; i < argc - 1; i++) {
             std::string arg = argv[i];
             if (arg == "-accur") {
                 std::string dump = std::string(argv[i + 1]);
-                this->accuracy = std::stod(dump);
+                this->Accuracy = std::stod(dump);
             }
             else if (arg == "-a") {
-                this->grid_size = std::stoi(argv[i + 1]);
+                this->Grid_size = std::stoi(argv[i + 1]);
             }
             else if (arg == "-i") {
-                this->iterations = std::stoi(argv[i + 1]);
+                this->Iterations = std::stoi(argv[i + 1]);
             }
         }
 
@@ -175,11 +175,11 @@ int main(int argc, char** argv) {
     while (i < max_iter && error > min_error) {
         i++;
       
-        cross_calc << <size - 1, size - 1 >> > (dev_A, dev_B, size);
+        cross_calc<<<size - 1, size - 1 >>>(dev_A, dev_B, size);
 
         if (i % 100 == 0) {
             // получаем матрицу ошибок
-            get_error_matrix << <size - 1, size - 1 >> > (dev_A, dev_B, dev_err_mat);
+            get_error_matrix<<<size - 1, size - 1 >>>(dev_A, dev_B, dev_err_mat);
             // находим максимальную ошибку
             cub::DeviceReduce::Max(temp_stor, tmp_stor_size, dev_err_mat, dev_err, full_size);
             // копируем память
