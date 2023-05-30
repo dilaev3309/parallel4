@@ -126,7 +126,7 @@ int main(int argc, char* argv[]) {
     }
 
     // заполняем границы с помощью линейной интерполяции
-    fillBorders << <(m + 1024 - 1) / 1024, 1024, 0, stream >> > (d_A, top, bottom, left, right, m);
+    fillBorders <<<(m + 1024 - 1) / 1024, 1024, 0, stream>>> (d_A, top, bottom, left, right, m);
     cudaErr = cudaMemcpyAsync(arr, d_A, size, cudaMemcpyDeviceToHost, stream);
     if (cudaErr != cudaSuccess) {
         fprintf(stderr, "(error code %s)!\n", cudaGetErrorString(cudaErr));
@@ -184,7 +184,7 @@ int main(int argc, char* argv[]) {
                     //q и p выбирают, какой массив мы считаем новым, а какой — старым.
                     q = (i % 2) * m;
                     p = m - q;
-                    getAverage << <grid, block, 0, stream >> > (d_A, p, q, m);
+                    getAverage <<<grid, block, 0, stream>>> (d_A, p, q, m);
                 }
                 cudaErr = cudaStreamEndCapture(stream, &graph);
                 if (cudaErr != cudaSuccess) {
@@ -222,7 +222,7 @@ int main(int argc, char* argv[]) {
 
             // вычисляем абсолютные значения различий массивов
             // а затем находим максимальную разницу(ошибку)
-            subtractArrays << <grid, block, 0, stream >> > (d_A, d_B, m);
+            subtractArrays <<<grid, block, 0, stream>>> (d_A, d_B, m);
             cub::DeviceReduce::Max(d_temp_storage, temp_storage_bytes, d_B, d_buff, m * m, stream);
             cudaErr = cudaMemcpyAsync(h_buff, d_buff, sizeof(double), cudaMemcpyDeviceToHost, stream);
 
