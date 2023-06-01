@@ -258,7 +258,7 @@ int main(int argc, char* argv[]) {
     //освобождаем память
     free(arr);
     free(h_buff);
-    
+    cudaDestroy(stream);
     cudaFree(d_buff);
     cudaFree(d_A);
     cudaFree(d_B);
